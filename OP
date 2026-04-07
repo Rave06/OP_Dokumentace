@@ -32,6 +32,10 @@ Práce s firewallem:
 	„sudo firewall-cmd --permanent --add-port=3389/tcp“ – permanentní otevření portu 
 	„sudo firewall-cmd --permanent --remove-port=3389/tcp“ – permanentní zavření portu 
 
+	"sudo firewall-cmd --list-all" - Výpis všech pravidel a nastavení pro výchozí zónu
+	"sudo firewall-cmd --list-ports" - Výpis povolených portů
+	"sudo firewall-cmd --list-services" - Výpis povolených služeb
+
 	„sudo firewall-cmd –reload“ - restartuje firewall
 	"sudo firewall-cmd --state" - vypíše stav firewallu
 	"sudo systemctl status firewalld" - Zobrazení detailního stavu služby (přes systemd)

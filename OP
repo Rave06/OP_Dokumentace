@@ -1,3 +1,30 @@
+Obecný info:
+Při procházení adresáři vidíme účet, pod kterým jsme přihlášeni - např.: "vojta@localhost" následuje dvojtečka a za ní jeden ze dvou symbolů:
+"/" - root
+"~" - domovský adresář - /home/jmenousera
+Pokud při procházení nenacházíme některé soubory (například adresář /etc/ se nachází hned za rootem), pravděpodobně musíme přepnout na druhou možnost pomocí "cd" a "/" nebo "~".
+
+Příkazy "everyday use":
+
+man - vypíše kompletní tutoriál příkazu s všemi jeho přepínači - např.: "man ls"
+
+cd - mění adresář
+	cd .. - vrátí vás o adresář "zpátky"
+ls - vypíše obsah aktuálního adresáře
+	-l - vypíše podrobnosti (práva, vlastnía, datum, velikost)
+	-a - zobrazí i skryté soubory (ty začínají tečkou)
+pwd - vypíše cestu k aktuálnímu adresáři
+mkdir - vytvoří v aktuálním místě adresář
+	-p - v případě, že neexisutjí nad tím adresářem, který vytváříme
+cp - kopíruje soubor či adresář
+	-r - rekurzivní kopírování
+	- i - interaktivní režim, ptá se před přepsáním
+mv - přesun nebo přejmenování souboru/adresáře
+rm (remove) – Smazání souborů.
+	-r - Smaže adresář i s jeho obsahem.
+	-f - Vynucené smazání (bez ptaní). Pozor: Nezvratná operace.
+
+
 Linux nastavení sítě:
 1)	Buď při instalaci – nejjednodušší
 2)	Přes nmtui – velmi nespolehlivé – navigace - Tab, Enter, šipky
@@ -28,7 +55,8 @@ Abychom mohli měnit bezpečnostní kontexty pro SELinux, nainstalujeme si k tom
 
 Vzdálený přístup 
 SSH + SSH klíče	
-1.	Na Windows 11 otevřete Příkazový řádek a napište ssh-keygen. Vygeneruje se veřejný a soukromý klíč. Když se bude terminál ptát na heslo pro autentizaci SSH klíče, tak musíme zmáčknout pouze enter – nechat ho prázdné. Kdybychom heslo nastavili, tak by se při každé autentifikaci certifikátem terminál ptal i na heslo.
+1.	Na Windows 11 otevřete Příkazový řádek a napište ssh-keygen. Vygeneruje se veřejný a soukromý klíč. Když se bude terminál ptát na heslo pro autentizaci SSH klíče, tak musíme zmáčknout pouze enter – nechat ho prázdné (pokud chceme ověřování bez hesla). 
+Kdybychom heslo nastavili, tak by se při každé autentifikaci certifikátem terminál ptal i na heslo.
 Veřejný klíč nyní musíme umístit do souboru „authorized_keys“. Tento soubor musí být v adresáři ~/.ssh/. 
 ~/ - zástupný znak pro domovskou složku (/home/jmenousera)
 .ssh – tečka před složkou znamená že složka je skrytá.
@@ -38,28 +66,28 @@ Na Linuxu v souboru /etc/ssh/sshd_config změňte PasswordAuthentication z „ye
 SSH přihlášení: „ssh jmenousera@ipadresa“ – např: „ssh vojta@172.16.0.199“ Nejdříve se musíme přihlašovat pomocí hesla usera, za kterého se přihlašujeme. Po nastavení ssh certifikátu už ne.
 
 RDP
-Připojení z windowsu na linux.
-Ve windowsu nativně – není nutno instalovat.
-Na linuxu musíme nainstalovat. Například xrdp. 
-„Sudo dnf install xrdp“
-„sudo systemctl enable --now xrdp“ – zapne službu a zajistí že se bude zapínat vždy po zapnutí.
-„sudo firewall-cmd --permanent --add-port=3389/tcp“ – permanentní otevření portu 3389, na kterém RDP komunikuje.
-„sudo firewall-cmd –reload“ – restartuje firewall
-„sudo dnf install plasma-workspace-x11 xorg-x11-xinit“ – pokud to nefunguje, tak musíme doinstalovat programy napozadí pro kompatibilitu přenosu.
+	Připojení z windowsu na linux.
+		Ve windowsu nativně – není nutno instalovat.
+		Na linuxu musíme nainstalovat. Například xrdp. 
+		„Sudo dnf install xrdp“
+		„sudo systemctl enable --now xrdp“ – zapne službu a zajistí že se bude zapínat vždy po zapnutí.
+		„sudo firewall-cmd --permanent --add-port=3389/tcp“ – permanentní otevření portu 3389, na kterém RDP komunikuje.
+		„sudo firewall-cmd –reload“ – restartuje firewall
+		„sudo dnf install plasma-workspace-x11 xorg-x11-xinit“ – pokud to nefunguje, tak musíme doinstalovat programy napozadí pro kompatibilitu přenosu.
 
-Připojení z linuxu na windows
-Ve Windows 11 jděte do Nastavení > Systém > Vzdálená plocha (Remote Desktop).
-Přepněte přepínač Vzdálená plocha na Zapnuto a potvrďte.
-„sudo dnf install remmina remmina-plugins-rdp“ 
-V grafickém prostředí Fedory (KDE Plasma) si v menu aplikací najděte a spusťte program Remmina.
-Hned nahoře uvidíte adresní řádek (podobný jako ve webovém prohlížeči).
-Ujistěte se, že je vedle řádku z roletky vybráno RDP.
-Do řádku napište IP adresu vašeho Windows a stiskněte Enter.
-Vyskočí na vás okno s dotazem na jméno a heslo:
-Uživatelské jméno: Zadejte jméno, pod kterým se přihlašujete do Windows (pokud používáte Microsoft účet, musíte většinou zadat celý e-mail, např. jmeno@outlook.cz).
-Heslo: Vaše heslo do Windows.
-Remmina vás pravděpodobně upozorní na chybějící certifikát (úplně stejná situace, jako když jste se připojoval z Windows na Linux). Stačí kliknout na "Přijmout" (Accept).
-
+	Připojení z linuxu na windows
+		Ve Windows 11 jděte do Nastavení > Systém > Vzdálená plocha (Remote Desktop).
+		Přepněte přepínač Vzdálená plocha na Zapnuto a potvrďte.
+		„sudo dnf install remmina remmina-plugins-rdp“ 
+		V grafickém prostředí Fedory (KDE Plasma) si v menu aplikací najděte a spusťte program Remmina.
+		Hned nahoře uvidíte adresní řádek (podobný jako ve webovém prohlížeči).
+		Ujistěte se, že je vedle řádku z roletky vybráno RDP.
+		Do řádku napište IP adresu vašeho Windows a stiskněte Enter.
+		Vyskočí na vás okno s dotazem na jméno a heslo:
+		Uživatelské jméno: Zadejte jméno, pod kterým se přihlašujete do Windows (pokud používáte Microsoft účet, musíte většinou zadat celý e-mail, např. jmeno@outlook.cz).
+		Heslo: Vaše heslo do Windows.
+		Remmina vás pravděpodobně upozorní na chybějící certifikát (úplně stejná situace, jako když jste se připojoval z Windows na Linux). Stačí kliknout na "Přijmout" (Accept).
+	
 
 
 

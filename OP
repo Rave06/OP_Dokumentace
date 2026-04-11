@@ -57,6 +57,12 @@ Linux nastavení sítě:
 	„sudo nmcli connection modify „ens160“ ipv4.method manual“ – nastaví, aby IPV4 byla pouze statická. Bez toho bude mít síťová karta DHCP adresu a tu kterou jsme přidali dohromady.
 	„sudo ncmli connection up „název“ „ – restartuje síťovou kartu, aby se nastavení projevilo
 
+Ověření funkčnosti portů
+	Pokud "pingujeme" z windowsu, možností je více já použiju telnet.
+	Win+R a do nabíky napsat "optionalfeatures"
+	Tady zaškrtnout telnet políčko a "OK"
+	pak přes cmd, které je nutné po instlaci restartovat! zadáme příkaz: "telnet ipadresa port"
+
 Nastavení LVM:
 	„sudo pvcreate /dev/sdb /dev/sdc“ – Physical Volume. Označíme jednotlivé disky pro práci s LVM
 	„sudo vgcreate datavg /dev/sdb /dev/sdc“ – Volume Group. Spojíme disky do jednoho celku jménem datavg.  

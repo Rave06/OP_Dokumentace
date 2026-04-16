@@ -78,6 +78,10 @@ Samba:
 	Vytvořte složku na vašem LVM disku: mkdir /mnt/data/share.
 	Upravte soubor /etc/samba/smb.conf a na konec přidejte definici sdílení (cesta ke složce, práva atd.).
 	Nastavte uživateli heslo pro Sambu: sudo smbpasswd -a uzivatel.
+Apache server:
+		sudo dnf install httpd - nainstalujeme službu
+		sudo systemctl start httpd - zapneme službu
+		sudo systemctl enable httpd - nastavíme její automatické zapnutí při startu systému
 
 Nastavení Ngnix serveru:
 	Pokud Nginx nemáme, nainstalujeme si ho:

@@ -231,8 +231,9 @@ Vzdálený přístup
 			U SCP i SFTP číslo portu 22 (SSH).
 		FileZilla - Klient SCP, SFTP pro windows i linux
 			sudo apt install filezilla
-		OpenSSH - Server SCP, SFTP server většinou předinstalovaný v linuxu (Fedora)
-			pokud ne - "sudo dnf install openssh-server"
+		OpenSSH - Server SCP, SFTP server většinou předinstalovaný v linuxu (Fedora); Ve windowsu nutno nainstalovat
+			"sudo dnf install openssh-server" - Linux
+			Aplikace -> Volitelné součásti -> Zobrazit funkce -> Dostupné funkce -> Server OpenSSH - Windows
 			
 			
 

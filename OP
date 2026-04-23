@@ -166,7 +166,8 @@ Vzdálený přístup
 
 
 	SSH + SSH klíče	
-		1.	Na Windows 11 otevřete Příkazový řádek a napište ssh-keygen. Vygeneruje se veřejný a soukromý klíč. Když se bude terminál ptát na heslo pro autentizaci SSH klíče, tak musíme zmáčknout pouze enter – nechat ho prázdné (pokud chceme ověřování bez hesla). 
+		1.	Na Windows 11 otevřete Příkazový řádek a napište ssh-keygen. Vygeneruje se veřejný a soukromý klíč. Když se bude terminál ptát na heslo pro autentizaci SSH klíče,
+		tak musíme zmáčknout pouze enter – nechat ho prázdné (pokud chceme ověřování bez hesla). 
 		Kdybychom heslo nastavili, tak by se při každé autentifikaci certifikátem terminál ptal i na heslo.
 		Veřejný klíč nyní musíme umístit do souboru „authorized_keys“. Tento soubor musí být v adresáři ~/.ssh/. 
 		~/ - zástupný znak pro domovskou složku (/home/jmenousera)

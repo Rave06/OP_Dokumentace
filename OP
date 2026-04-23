@@ -230,6 +230,7 @@ Vzdálený přístup
 			Heslo - heslo toho usera, za kterého se připojujeme
 			U SCP i SFTP číslo portu 22 (SSH).
 		FileZilla - Klient SCP, SFTP pro windows i linux
+			sudo apt install filezilla
 		OpenSSH - Server SCP, SFTP server většinou předinstalovaný v linuxu (Fedora)
 			pokud ne - "sudo dnf install openssh-server"
 			

@@ -232,7 +232,7 @@ Vzdálený přístup
 
 		
 
-		OpenSSH - Server SCP, SFTP server většinou předinstalovaný v linuxu (Fedora); Ve windowsu nutno nainstalovat
+		OpenSSH - Server SCP, SFTP většinou předinstalovaný v linuxu (Fedora); Ve windowsu nutno nainstalovat
 			Linux
 				"sudo dnf install openssh-server"
 			Windows

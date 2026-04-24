@@ -230,8 +230,7 @@ Vzdálený přístup
 			Heslo - heslo toho usera, za kterého se připojujeme
 			U SCP i SFTP číslo portu 22 (SSH).
 
-		FileZilla - FTP, SFTP klient pro windows i linux
-			sudo apt install filezilla - linux
+		
 
 		OpenSSH - Server SCP, SFTP server většinou předinstalovaný v linuxu (Fedora); Ve windowsu nutno nainstalovat
 			Linux
@@ -240,19 +239,32 @@ Vzdálený přístup
 				Aplikace -> Volitelné součásti -> Zobrazit funkce -> Dostupné funkce -> Server OpenSSH -> otevřít Služby nebo "services.msc". - 
 				-> Najít položku OpenSSH SSH Server -> Vlastnosti -> typ spouštění na "automaticky" - nyní se server zapne vždy se startem systému
 
-		FTP
-			FTP windows server
-				Stáhnout Filezilla server a nainstalovat
-				Nutno povolit ve firewallu -> nové pravidlo -> vybrat soubor "filezilla-server.exe" ve složce, kde je filezilla sever nainstalovaný
-				Nainstaluje se nám "Administer FileZilla Server" - konzole pro správu serveru. V ní musíme vytvořit nového uživatele, za kterého se přihlásíme.
-				Nejdříve se připojíme na náš server (adresa stroje) a zadáme heslo, které jsme vytvořili při instalaci.
-				Pokud je zde již "<system user>", tak se můžeme přihlásit přes "uživatele" ve windowsu. Pouze musíme nastavit cesty k souborům.
-				Server -> Configure - > Users -> Add (User) -> zaškrtnout "User is enabled" -> v authentication "require a password to log in" - Tímto vytvoříme nového uživatele pro přístup (
-				pokud musíme, nebo nehceme přes systémového).
-				virtual path - je to to, co uvidíme po připojení. Pro linux se dává "/"
-				native path - skutečná cesta, kam dáváme přístup.
-				Nezapomenout nastavit práva.
-			
+	FTP
+		FTP windows server
+			Stáhnout Filezilla server a nainstalovat
+			Nutno povolit ve firewallu -> nové pravidlo -> vybrat soubor "filezilla-server.exe" ve složce, kde je filezilla sever nainstalovaný
+			Nainstaluje se nám "Administer FileZilla Server" - konzole pro správu serveru. V ní musíme vytvořit nového uživatele, za kterého se přihlásíme.
+			Nejdříve se připojíme na náš server (adresa stroje) a zadáme heslo, které jsme vytvořili při instalaci.
+			Pokud je zde již "<system user>", tak se můžeme přihlásit přes "uživatele" ve windowsu. Pouze musíme nastavit cesty k souborům.
+			Server -> Configure - > Users -> Add (User) -> zaškrtnout "User is enabled" -> v authentication "require a password to log in" - Tímto vytvoříme nového uživatele pro přístup (
+			pokud musíme, nebo nehceme přes systémového).
+			virtual path - je to to, co uvidíme po připojení. Pro linux se dává "/"
+			native path - skutečná cesta, kam dáváme přístup.
+			Nezapomenout nastavit práva.
+
+		FTP windows klient
+			Filezilla 
+				stáhnout a nainstalovat, má to GUI takže ez. (Podporuje i SFTP)
+			Průzkumník souborů
+				Lze se připojit i přes průzkumníka souborů. Do adresního řádku: "ftp:\\adresastroje".
+				Nebo v záložce síť "nové místo pro připojení". Zde zadat opět "ftp:\\adresastroje".
+				V obou případech musíme znát username a heslo uživatele, za kterého se na cílovém stroji přihlašujeme.
+
+		FTP linux klient
+			sudo dnf install filezilla. Ovládá se v GUI.
+
+		FTP linux server
+			vsftpd - very secure FTP Daemon.
 			
 
 

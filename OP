@@ -79,9 +79,48 @@ Samba:
 	Upravte soubor /etc/samba/smb.conf a na konec přidejte definici sdílení (cesta ke složce, práva atd.).
 	Nastavte uživateli heslo pro Sambu: sudo smbpasswd -a uzivatel.
 Apache server:
-		sudo dnf install httpd - nainstalujeme službu
-		sudo systemctl start httpd - zapneme službu
-		sudo systemctl enable httpd - nastavíme její automatické zapnutí při startu systému
+		„sudo dnf install httpd„ - nainstalujeme službu
+		„sudo systemctl start httpd„ - zapneme službu
+		„sudo systemctl enable httpd„ - nastavíme její automatické zapnutí při startu systému
+
+		„sudo mkdir -p /var/www/web1010/html„
+		„sudo mkdir -p /var/www/web2020/html„ - Těmito příkazy vytvoříme jednotlivé složky pro dva weby na různých portech. Poté musíme do těchto adresářů uložit nějaký obsah na jejich odlišení.
+			
+		„echo "<h1>Web na portu 1010</h1>" | sudo tee /var/www/web1010/html/index.html„
+		„echo "<h1>Web na portu 2020</h1>" | sudo tee /var/www/web2020/html/index.html„ - Takto v nich vytvoříme soubor index.html a vložíme jednoduchý text, který je rozliší. 
+			
+		„sudo chown -R apache:apache /var/www/web1010„
+		„sudo chown -R apache:apache /var/www/web2020„ - nyní musíme jakožto vlastníka uživatele apache, jelikož když použijeme "sudo" vlastníkem je root a nikdo jiný tam přístup nemá.
+			
+		„sudo nano /etc/httpd/conf/httpd.conf„ - Toto je hlavní konfigurační soubor pro všechny weby. V něm musíme nastavit porty, na kterých ma Apache naslouchat: Listen 1010 Listen 2020
+			
+		„/etc/httpd/conf.d„ - Toto je složka, kde se konfigurují jednotlivé weby na jednotlivých portech.
+		„sudo nano /etc/httpd/conf.d/web1010.conf„
+		„sudo nano /etc/httpd/conf.d/web2020.conf„ - Vytvoříme zde dva soubory pro dva weby na portech 1010 a 2020.
+			
+		<VirtualHost *:1010> 
+    		ServerName web1010.cz
+    		ServerAlias www.web1010.cz
+    		DocumentRoot /var/www/web1010/html
+
+		    <Directory "/var/www/web1010/html">
+		        AllowOverride all
+		        Require all granted
+		    </Directory>
+		</VirtualHost> 
+			Toto do nich vložíme. Samozřejmě změníme "web1010" v adresářích v druhé složce na "web2020". NEZAPOMENOUT ZMĚNIT PORT V PRVNÍM ŘÁDKU!
+
+		„sudo semanage port -a -t http_port_t -p tcp 1010„
+		„sudo semanage port -a -t http_port_t -p tcp 2020„ - Nyní musíme SELinuxu říct, že má pracovat i s našimi porty. Potřebujeme k tomu nástroj: sudo dnf install policycoreutils-python-utils
+
+		"sudo firewall-cmd --permanent --add-port=1010/tcp"
+		"sudo firewall-cmd --permanent --add-port=2020/tcp" - Nyní musíme porty otevřít ve firewallu
+		"sudo firewall-cmd --reload" - FIREWALL RESTARTUJEME.
+
+		"sudo systemctl restart httpd" - NAKONEC SLUŽBU RESTARTUJEME. BEZ TOHO SE TO NENAČTE.
+		"sudo apachectl configtest" - Ověří správnost syntaxe v konfiguračních souborech.
+		"sudo httpd -S" - Ukáže co za porty apache poslouchá a které soubory .conf načítá.
+		"sudo semanage port -l | grep http_port_t" - Zobrazí porty povolené v SELinuxu.
 
 Nastavení Ngnix serveru:
 	Pokud Nginx nemáme, nainstalujeme si ho:
@@ -229,8 +268,6 @@ Vzdálený přístup
 			Uživatelské jméno - user, za kterého se na daném stroji připojujeme
 			Heslo - heslo toho usera, za kterého se připojujeme
 			U SCP i SFTP číslo portu 22 (SSH).
-
-		
 
 		OpenSSH - Server SCP, SFTP většinou předinstalovaný v linuxu (Fedora); Ve windowsu nutno nainstalovat
 			Linux

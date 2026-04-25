@@ -27,6 +27,7 @@ rm (remove) – Smazání souborů.
 Instalace GUI na linux
 	"sudo dnf install @kde-desktop"
 	"startplasma-wayland"
+	"sudo dnf install plasma-workspace-wayland" - instalace waylandu - kompozitor
 
 Práce s firewallem:
 	„sudo firewall-cmd --permanent --add-port=3389/tcp“ – permanentní otevření portu 
@@ -239,7 +240,6 @@ Vzdálený přístup
 			Heslo: Vaše heslo do Windows.
 			Remmina vás pravděpodobně upozorní na chybějící certifikát (úplně stejná situace, jako když jste se připojoval z Windows na Linux). Stačí kliknout na "Přijmout" (Accept).
 	
-
 	VNC
 		Připojení z linuxu na windows
 			„sudo dnf install remmina“ – pokud ještě nemáme, nainstalujeme Remminu.

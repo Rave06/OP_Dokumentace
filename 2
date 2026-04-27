@@ -1,1 +1,321 @@
+Obecný info:
+Při procházení adresáři vidíme účet, pod kterým jsme přihlášeni - např.: "vojta@localhost" následuje dvojtečka a za ní jeden ze dvou symbolů:
+"/" - root
+"~" - domovský adresář - /home/jmenousera
+Pokud při procházení nenacházíme některé soubory (například adresář /etc/ se nachází hned za rootem), pravděpodobně musíme přepnout na druhou možnost pomocí "cd" a "/" nebo "~".
 
+Příkazy "everyday use":
+
+man - vypíše kompletní tutoriál příkazu s všemi jeho přepínači - např.: "man ls"
+
+cd - mění adresář
+	cd .. - vrátí vás o adresář "zpátky"
+ls - vypíše obsah aktuálního adresáře
+	-l - vypíše podrobnosti (práva, vlastnía, datum, velikost)
+	-a - zobrazí i skryté soubory (ty začínají tečkou)
+pwd - vypíše cestu k aktuálnímu adresáři
+mkdir - vytvoří v aktuálním místě adresář
+	-p - v případě, že neexisutjí nad tím adresářem, který vytváříme
+cp - kopíruje soubor či adresář
+	-r - rekurzivní kopírování
+	- i - interaktivní režim, ptá se před přepsáním
+mv - přesun nebo přejmenování souboru/adresáře
+rm (remove) – Smazání souborů.
+	-r - Smaže adresář i s jeho obsahem.
+	-f - Vynucené smazání (bez ptaní). Pozor: Nezvratná operace.
+
+Instalace GUI na linux
+	"sudo dnf install @kde-desktop"
+	"startplasma-wayland"
+	"sudo dnf install plasma-workspace-wayland" - instalace waylandu - kompozitor
+
+Práce s firewallem:
+	„sudo firewall-cmd --permanent --add-port=3389/tcp“ – permanentní otevření portu 
+	„sudo firewall-cmd --permanent --remove-port=3389/tcp“ – permanentní zavření portu 
+
+	"sudo firewall-cmd --list-all" - Výpis všech pravidel a nastavení pro výchozí zónu
+	"sudo firewall-cmd --list-ports" - Výpis povolených portů
+	"sudo firewall-cmd --list-services" - Výpis povolených služeb
+
+	„sudo firewall-cmd –reload“ - restartuje firewall
+	"sudo firewall-cmd --state" - vypíše stav firewallu
+	"sudo systemctl status firewalld" - Zobrazení detailního stavu služby (přes systemd)
+	"sudo systemctl start firewalld" / sudo systemctl stop firewalld" - Spuštění / Zastavení firewallu
+	"sudo systemctl enable firewalld" - Povolení startu firewallu po startu systému
+
+
+Linux nastavení sítě:
+	1)	Buď při instalaci – nejjednodušší
+	2)	Přes nmtui – velmi nespolehlivé – navigace - Tab, Enter, šipky
+	„sudo dnf install NetworkManager-tui“
+	„nmtui“ – zapne nmtui
+	3)	Příkazy v terminálu – Lepší než nmtui
+	„nmcli connection show“ – vypíše síťový připojení.
+	„sudo nmcli connection modify „název“ ipv4.method manual“ – přepne z DHCP na manuální statickou adresu.
+	„sudo nmcli connection modify „název“ ipv4.addresses 172.16.0.254/16“ – nastavení adresy a masky sítě
+	„sudo nmcli connection modify „název“ ipv4.gateway 172.16.0.2“ – nastavení výchozí brány
+	„sudo nmcli connection modify „název“ ipv4.dns 8.8.8.8“ – nastavení DNS
+	„sudo nmcli connection modify „ens160“ ipv4.method manual“ – nastaví, aby IPV4 byla pouze statická. Bez toho bude mít síťová karta DHCP adresu a tu kterou jsme přidali dohromady.
+	„sudo ncmli connection up „název“ „ – restartuje síťovou kartu, aby se nastavení projevilo
+
+Ověření funkčnosti portů
+	Pokud "pingujeme" z windowsu, možností je více já použiju telnet.
+	Win+R a do nabíky napsat "optionalfeatures"
+	Tady zaškrtnout telnet políčko a "OK"
+	pak přes cmd, které je nutné po instlaci restartovat! zadáme příkaz: "telnet ipadresa port"
+
+Nastavení LVM:
+	„sudo pvcreate /dev/sdb /dev/sdc“ – Physical Volume. Označíme jednotlivé disky pro práci s LVM
+	„sudo vgcreate datavg /dev/sdb /dev/sdc“ – Volume Group. Spojíme disky do jednoho celku jménem datavg.  
+	„sudo lvcreate -l 100%FREE -n datalv datavg“ – Z Volume Group datavg vytvoříme svazek datalv s 100% volného místa.
+	„sudo mkfs.xfs /dev/datavg/datalv“ – Vytvoříme filesystem xfs
+	„sudo mkdir -p /mnt/data“ – vytvoření prázdné složky – přípojného bodu
+	„sudo mount /dev/datavg/datalv /mnt/data“ – Svazek připojíme do naší prázdné složky.
+	„sudo nano /etc/fstab“ – Aby se připojení uchovalo, musíme to zapsat do fstabu
+	„/dev/datavg/datalv /mnt/data xfs defaults 0 0“ – vložíme do fstabu – „Při každém startu vezmi tento svazek, připoj ho do této složky, použij formát xfs a výchozí nastavení.“
+
+Samba:
+	Nainstalujte Sambu: sudo apt install samba.
+	Vytvořte složku na vašem LVM disku: mkdir /mnt/data/share.
+	Upravte soubor /etc/samba/smb.conf a na konec přidejte definici sdílení (cesta ke složce, práva atd.).
+	Nastavte uživateli heslo pro Sambu: sudo smbpasswd -a uzivatel.
+Apache server:
+		„sudo dnf install httpd„ - nainstalujeme službu
+		„sudo systemctl start httpd„ - zapneme službu
+		„sudo systemctl enable httpd„ - nastavíme její automatické zapnutí při startu systému
+
+		„sudo mkdir -p /var/www/web1010/html„
+		„sudo mkdir -p /var/www/web2020/html„ - Těmito příkazy vytvoříme jednotlivé složky pro dva weby na různých portech. Poté musíme do těchto adresářů uložit nějaký obsah na jejich odlišení.
+			
+		„echo "<h1>Web na portu 1010</h1>" | sudo tee /var/www/web1010/html/index.html„
+		„echo "<h1>Web na portu 2020</h1>" | sudo tee /var/www/web2020/html/index.html„ - Takto v nich vytvoříme soubor index.html a vložíme jednoduchý text, který je rozliší. 
+			
+		„sudo chown -R apache:apache /var/www/web1010„
+		„sudo chown -R apache:apache /var/www/web2020„ - nyní musíme jakožto vlastníka uživatele apache, jelikož když použijeme "sudo" vlastníkem je root a nikdo jiný tam přístup nemá.
+			
+		„sudo nano /etc/httpd/conf/httpd.conf„ - Toto je hlavní konfigurační soubor pro všechny weby. V něm musíme nastavit porty, na kterých ma Apache naslouchat: Listen 1010 Listen 2020
+			
+		„/etc/httpd/conf.d„ - Toto je složka, kde se konfigurují jednotlivé weby na jednotlivých portech.
+		„sudo nano /etc/httpd/conf.d/web1010.conf„
+		„sudo nano /etc/httpd/conf.d/web2020.conf„ - Vytvoříme zde dva soubory pro dva weby na portech 1010 a 2020.
+			
+		<VirtualHost *:1010> 
+    		ServerName web1010.cz
+    		ServerAlias www.web1010.cz
+    		DocumentRoot /var/www/web1010/html
+
+		    <Directory "/var/www/web1010/html">
+		        AllowOverride all
+		        Require all granted
+		    </Directory>
+		</VirtualHost> 
+			Toto do nich vložíme. Samozřejmě změníme "web1010" v adresářích v druhé složce na "web2020". NEZAPOMENOUT ZMĚNIT PORT V PRVNÍM ŘÁDKU!
+
+		„sudo semanage port -a -t http_port_t -p tcp 1010„
+		„sudo semanage port -a -t http_port_t -p tcp 2020„ - Nyní musíme SELinuxu říct, že má pracovat i s našimi porty. Potřebujeme k tomu nástroj: sudo dnf install policycoreutils-python-utils
+
+		"sudo firewall-cmd --permanent --add-port=1010/tcp"
+		"sudo firewall-cmd --permanent --add-port=2020/tcp" - Nyní musíme porty otevřít ve firewallu
+		"sudo firewall-cmd --reload" - FIREWALL RESTARTUJEME.
+
+		"sudo systemctl restart httpd" - NAKONEC SLUŽBU RESTARTUJEME. BEZ TOHO SE TO NENAČTE.
+		"sudo apachectl configtest" - Ověří správnost syntaxe v konfiguračních souborech.
+		"sudo httpd -S" - Ukáže co za porty apache poslouchá a které soubory .conf načítá.
+		"sudo semanage port -l | grep http_port_t" - Zobrazí porty povolené v SELinuxu.
+
+Nastavení Ngnix serveru:
+	Pokud Nginx nemáme, nainstalujeme si ho:
+		sudo dnf install nginx
+	
+	Toto je konkrétní nastavení pro dva různé weby běžící na portech 8080 a 8081.
+		Nejdříve si vytvoříme samotné index.html soubory, které budou weby číst. Musíme je vytvořit mimo /home adresář, jinak SELinux k nim zakáže přístup.
+		"sudo mkdir -p /var/www/web1 /var/www/web2" - tímto vytvoříme složky "web1" a "web2", do kterých dáme soubor index.html, který bude web zobrazovat. Standardně se používá cesta
+		/var/www/. Teoreticky by soubory mohly být umístěny například i v rootu, ale je to bezpečnostní rizko, jelikož bychom nginxu nastavili přístup do celého systému. Zároveň by nás tam SELinux nechtěl pustit.
+		echo "<h1>Web 1 běží na 8080</h1>" | sudo tee /var/www/web1/index.html
+		echo "<h1>Web 2 běží na 8081</h1>" | sudo tee /var/www/web2/index.html - Tyto dva příkazy do našich adresářů nahrají text odlišující dva weby. Lze to samozřejmě udělat i ručně.
+
+	Nyní musíme nakonfigurovat Nginx a říct mu, kde si má soubory vzít:
+		/etc/nginx/conf.d/ - v této složce si vytvoříme dva soubory pro dva weby, které budou určovat jejich nastavení. Např.: web1.conf a web2.conf
+		Nyní do těchto dvou souborů vložíme konfiguraci: (samozřejmě nezapomeneme změnit porty a soubory pro jednotlivé weby)
+		server {
+	    listen 8080;
+	    root /var/www/web1;
+	    index index.html;
+		}
+		Po uložení si můžeme nastavení zkontrolovat pomocí "sudo nginx -t". Pokud zde budeme mít nějaké syntatické chyby, upozorní nás to.
+
+	Teď si otevřeme porty, na kterých chceme weby provozovat (jestli to už nemáme).
+		sudo firewall-cmd --permanent --add-port=8080/tcp
+		sudo firewall-cmd --permanent --add-port=8081/tcp
+		sudo firewall-cmd --list-all 	-Pro kontrolu
+		sudo firewall-cmd --reload
+
+	Nastavíme porty také pro SELinux:
+		sudo semanage port -a -t http_port_t -p tcp 8080
+		sudo semanage port -a -t http_port_t -p tcp 8081
+
+	Protože SELinux je mrdka, musíme mu říct, že ty soubory jsou určený pro nginx web. Těmito příkazy to uděláme trvale:
+		# Trvalé zapsání do databáze SELinuxu
+		sudo semanage fcontext -a -t httpd_sys_content_t "/var/www/web1(/.*)?"
+		sudo semanage fcontext -a -t httpd_sys_content_t "/var/www/web2(/.*)?"
+	
+		# Aplikace štítků na existující soubory
+		sudo restorecon -Rv /var/www/
+
+	Jako poslední musíme Nginxu nastavit práva pro práci se soubory, co má zobrazit:
+		sudo chmod -R 755 /var/www/web1
+		sudo chmod -R 755 /var/www/web2
+		Konkrétně mu nastavíme read a execute. Execute proto, aby se prokouzal přes adresáře až k souboru a read, aby si ho přečetl a zobrazil.
+
+	Nakonec službu restartujeme:
+		sudo systemctl restart nginx
+
+Abychom mohli měnit bezpečnostní kontexty pro SELinux, nainstalujeme si k tomu nejdřív nástroj: 
+„sudo dnf install policycoreutils-python-utils“
+
+Vzdálený přístup 
+	Servery a klienti:
+		Server - Aplikace, do které se připojujeme (Ovládaný PC)
+		Klient - Aplikace, přes kterou se připojujeme (Ovládající PC)
+			Remmina - linux klient pro RDP, SSH, VNC. Funguje jako jedna aplikace, do které se doinstalovávají moduly pro jednotlivé protokoly.
+				„sudo dnf install remmina“
+				„sudo dnf install remmina remmina-plugins-vnc“ – nainstaluje remminu i s modulem VNC.
+		RDP
+			Windows RDP klient
+				Je nativně nainstalovaný a zapnutý
+			Windows RDP Server
+				Je nativně nainstalovaný, ale je to nutné ho zapnout
+				Ve Windows 11 jděte do Nastavení > Systém > Vzdálená plocha (Remote Desktop).
+				Přepněte přepínač Vzdálená plocha na Zapnuto a potvrďte.
+			Linux RDP Server
+				"sudo dnf install xrdp"
+			Linux RDP Klient
+				Řešíme přes Remminu
+				„sudo dnf install remmina remmina-plugins-rdp“ 
+		VNC
+			Linux VNC klient
+				Řešíme přes Remminu
+				„sudo dnf install remmina remmina-plugins-vnc“ – nainstaluje remminu i s modulem VNC.
+			Linux VNC server
+				TigerVNC
+				"sudo dnf install tigervnc-server"
+			Windows VNC server
+				-TightVNC
+			Windows VNC klient
+				-RealVNC Viewer
+
+
+	SSH + SSH klíče	
+		1.	Na Windows 11 otevřete Příkazový řádek a napište ssh-keygen. Vygeneruje se veřejný a soukromý klíč. Když se bude terminál ptát na heslo pro autentizaci SSH klíče,
+		tak musíme zmáčknout pouze enter – nechat ho prázdné (pokud chceme ověřování bez hesla). 
+		Kdybychom heslo nastavili, tak by se při každé autentifikaci certifikátem terminál ptal i na heslo.
+		Veřejný klíč nyní musíme umístit do souboru „authorized_keys“. Tento soubor musí být v adresáři ~/.ssh/. 
+		~/ - zástupný znak pro domovskou složku (/home/jmenousera)
+		.ssh – tečka před složkou znamená že složka je skrytá.
+		Vytvoření: mkdir -p ~/.ssh – přepínač p v případě neexistují nadřazené složky tuto složku vytvoří
+		nano ~/.ssh/authorized_keys – tímto vytvoříme v složce .ssh textový soubor „authorized_keys“
+		Na Linuxu v souboru /etc/ssh/sshd_config změňte PasswordAuthentication z „yes“ na „no“ a restartujte službu SSH. Nyní se přihlásíte pouze s klíčem.
+		SSH přihlášení: „ssh jmenousera@ipadresa“ – např: „ssh vojta@172.16.0.199“ Nejdříve se musíme přihlašovat pomocí hesla usera, za kterého se přihlašujeme. Po nastavení ssh certifikátu už ne.
+
+	RDP
+		Připojení z windowsu na linux.
+			Ve windowsu nativně – není nutno instalovat.
+			Na linuxu musíme nainstalovat. Například xrdp. 
+			„Sudo dnf install xrdp“
+			„sudo systemctl enable --now xrdp“ – zapne službu a zajistí že se bude zapínat vždy po zapnutí.
+			„sudo firewall-cmd --permanent --add-port=3389/tcp“ – permanentní otevření portu 3389, na kterém RDP komunikuje.
+			„sudo firewall-cmd –reload“ – restartuje firewall
+			„sudo dnf install plasma-workspace-x11 xorg-x11-xinit“ – pokud to nefunguje, tak musíme doinstalovat programy napozadí pro kompatibilitu přenosu.
+	
+		Připojení z linuxu na windows
+			Ve Windows 11 jděte do Nastavení > Systém > Vzdálená plocha (Remote Desktop).
+			Přepněte přepínač Vzdálená plocha na Zapnuto a potvrďte.
+			„sudo dnf install remmina remmina-plugins-rdp“ 
+			V grafickém prostředí Fedory (KDE Plasma) si v menu aplikací najděte a spusťte program Remmina.
+			Hned nahoře uvidíte adresní řádek (podobný jako ve webovém prohlížeči).
+			Ujistěte se, že je vedle řádku z roletky vybráno RDP.
+			Do řádku napište IP adresu vašeho Windows a stiskněte Enter.
+			Vyskočí na vás okno s dotazem na jméno a heslo:
+			Uživatelské jméno: Zadejte jméno, pod kterým se přihlašujete do Windows (pokud používáte Microsoft účet, musíte většinou zadat celý e-mail, např. jmeno@outlook.cz).
+			Heslo: Vaše heslo do Windows.
+			Remmina vás pravděpodobně upozorní na chybějící certifikát (úplně stejná situace, jako když jste se připojoval z Windows na Linux). Stačí kliknout na "Přijmout" (Accept).
+	
+	VNC
+		Připojení z linuxu na windows
+			„sudo dnf install remmina“ – pokud ještě nemáme, nainstalujeme Remminu.
+			„sudo dnf install remmina remmina-plugins-vnc“ – nainstaluje remminu i s modulem VNC.
+			„sudo firewall-cmd --permanent –add-port=5900/tcp“ – pro jistotu otevřeme port pro VNC
+			„sudo firewall-cmd  --reload“ – restartujeme firewall službu
+			Na windows stáhnout VNC server – TightVNC. Během instalace zakliknout nasinstalování TightVNC serveru – complete instalation. Také se bude ptát na heslo – tímto heslem se poté budeme připojovat.
+			Poté jdeme do remminy, vybereme modul VNC, zadáme ip adresu windows a připojíme se. Zadáme heslo, co jsme nastavili ve windows serveru a hotovo. 
+
+		Připojení z windowsu na linux
+			„sudo dnf install tigervnc-server“ – instalace VNC serveru na linuxu
+			„vncpasswd“ – vytvoříme heslo pro VNC server.
+			Musíme systému říct, že "Displej číslo 1" patří vašemu uživateli. Otevřete konfigurační soubor:
+			„sudo nano /etc/tigervnc/vncserver.users“ 
+			Úplně na konec souboru přidejte tento řádek „:1=vojta“. Za „vojta“ napsat uživatelské jméno. Pozor! Musíme to napsat bez hashtagu. Hashtag je komentář.
+			„sudo firewall-cmd --permanent --add-port=5901/tcp“ – otevřeme port 5901, na kterém běží displej 1 přenosu VNC
+			„sudo firewall-cmd –reload“
+
+	SCP, SFTP,
+		SCP i SFTP 
+			Protokoly pro kopírování souborů pracující přes SSH. 
+
+		WinSCP - Windows klient pro SCP i SFTP
+			Prostě stáhnout, nainstalovat.
+			Hostitel - IP adresa stroje, na který se připojumeme.
+			Uživatelské jméno - user, za kterého se na daném stroji připojujeme
+			Heslo - heslo toho usera, za kterého se připojujeme
+			U SCP i SFTP číslo portu 22 (SSH).
+
+		OpenSSH - Server SCP, SFTP většinou předinstalovaný v linuxu (Fedora); Ve windowsu nutno nainstalovat
+			Linux
+				"sudo dnf install openssh-server"
+			Windows
+				Aplikace -> Volitelné součásti -> Zobrazit funkce -> Dostupné funkce -> Server OpenSSH -> otevřít Služby nebo "services.msc". - 
+				-> Najít položku OpenSSH SSH Server -> Vlastnosti -> typ spouštění na "automaticky" - nyní se server zapne vždy se startem systému
+
+	FTP
+		FTP windows server
+			Stáhnout Filezilla server a nainstalovat
+			Nutno povolit ve firewallu -> nové pravidlo -> vybrat soubor "filezilla-server.exe" ve složce, kde je filezilla sever nainstalovaný
+			Nainstaluje se nám "Administer FileZilla Server" - konzole pro správu serveru. V ní musíme vytvořit nového uživatele, za kterého se přihlásíme.
+			Nejdříve se připojíme na náš server (adresa stroje) a zadáme heslo, které jsme vytvořili při instalaci.
+			Pokud je zde již "<system user>", tak se můžeme přihlásit přes "uživatele" ve windowsu. Pouze musíme nastavit cesty k souborům.
+			Server -> Configure - > Users -> Add (User) -> zaškrtnout "User is enabled" -> v authentication "require a password to log in" - Tímto vytvoříme nového uživatele pro přístup (
+			pokud musíme, nebo nehceme přes systémového).
+			virtual path - je to to, co uvidíme po připojení. Pro linux se dává "/"
+			native path - skutečná cesta, kam dáváme přístup.
+			Nezapomenout nastavit práva.
+
+		FTP windows klient
+			Filezilla 
+				stáhnout a nainstalovat, má to GUI takže ez. (Podporuje i SFTP)
+			Průzkumník souborů
+				Lze se připojit i přes průzkumníka souborů. Do adresního řádku: "ftp:\\adresastroje".
+				Nebo v záložce síť "nové místo pro připojení". Zde zadat opět "ftp:\\adresastroje".
+				V obou případech musíme znát username a heslo uživatele, za kterého se na cílovém stroji přihlašujeme.
+
+		FTP linux klient
+			sudo dnf install filezilla. Ovládá se v GUI.
+
+		FTP linux server
+			vsftpd - very secure FTP Daemon.
+			"sudo dnf install vsftpd"
+			"sudo systemctl enable --now vsftpd" - povolíme a zapneme vždy při startu systému (i nyní)
+			Konfigurace je uložena v /etc/vsftpd/vsftpd.conf 
+			V ní musí být odkomentováno/přidáno:
+			"anonymous_enable=NO"
+			"local_enable=YES"
+			"write_enable=YES"
+			"chroot_local_user=YES"
+			Úplně na konec souboru dáme: allow_writeable_chroot=YES
+			"sudo systemctl restart vsftpd" - Službu restartujeme
+			"sudo setsebool -P ftpd_full_access 1" - Povolíme oprávnění pro SELinux
+			"sudo firewall-cmd --add-service=ftp --permanent"
+			"sudo firewall-cmd --reload"
+			Teď nám běží FTP server a můžeme na něj připojit například z windowsu z Filezilly.
+			
+
+	
